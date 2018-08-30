@@ -48,7 +48,7 @@ namespace com.hotelbeds.distribution.hotel_api_sdk
         {
         }
 
-        public HotelApiClient(HotelApiVersion version, string apiKey, string sharedSecret) : this(version,apiKey,sharedSecret,true)
+        public HotelApiClient(HotelApiVersion version, string apiKey, string sharedSecret) : this(version, apiKey, sharedSecret, true)
         {
         }
 
@@ -64,7 +64,23 @@ namespace com.hotelbeds.distribution.hotel_api_sdk
                 this.basePath = currentEnvironment.BaseUrl;
                 this.baseSecurePath = (currentEnvironment.BaseSecureUrl != null) ? currentEnvironment.BaseSecureUrl : currentEnvironment.BaseUrl;
             }
-            if (validate) {
+            if (validate)
+            {
+                CheckHotelApiClientConfig();
+            }
+        }
+
+        private HotelApiClient(HotelApiVersion version, string apiKey, string sharedSecret, Boolean validate, TimeSpan timeout, string basePath, string baseSecurePath)
+        {
+            this.timeout = timeout;
+            this.apiKey = apiKey;
+            this.sharedSecret = sharedSecret;
+            this.version = version;
+            this.basePath = basePath;
+            this.baseSecurePath = baseSecurePath;
+
+            if (validate)
+            {
                 CheckHotelApiClientConfig();
             }
         }
@@ -125,7 +141,7 @@ namespace com.hotelbeds.distribution.hotel_api_sdk
                 String environmentName = ConfigurationManager.AppSettings.Get("ENVIRONMENT");
                 if (!String.IsNullOrEmpty(environmentName))
                 {
-                    EnvironmentsSection environmentsSection = (EnvironmentsSection) ConfigurationManager.GetSection("environments");
+                    EnvironmentsSection environmentsSection = (EnvironmentsSection)ConfigurationManager.GetSection("environments");
                     List<config.Environment> environments = new List<config.Environment>(environmentsSection.Environments);
                     returnValue = environments.Find(x => x.Name == environmentName);
                 }
@@ -241,7 +257,7 @@ namespace com.hotelbeds.distribution.hotel_api_sdk
             return callRemoteApi<T, U>(request, path, param, version, this.basePath);
         }
 
-            private T callRemoteApi<T, U>(U request, HotelApiPaths.HotelApiPathsBase path, List<Tuple<string, string>> param, HotelApiVersion version, string baseUrl)
+        private T callRemoteApi<T, U>(U request, HotelApiPaths.HotelApiPathsBase path, List<Tuple<string, string>> param, HotelApiVersion version, string baseUrl)
         {
             try
             {
